@@ -38,4 +38,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [[your-github-name]](https://github.com/[your-github-name]) RX14 - creator, maintainer
+- [RX14](https://github.com/RX14) - creator, maintainer
