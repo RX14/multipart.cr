@@ -1,7 +1,4 @@
-require "http"
-require "./common"
 require "./multipart/*"
-require "./formdata"
 
 module HTTP::Multipart
   # Parses a MIME multipart message, yielding `HTTP::Headers` and an `IO` for

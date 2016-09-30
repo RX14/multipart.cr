@@ -17,7 +17,9 @@ dependencies:
 ## Usage
 
 ```crystal
-require "http/multipart"
+require "multipart"
+
+# Use HTTP::Multipart and HTTP::FormData
 ```
 
 See the [docs](https://crystal-docs.org/RX14/multipart.cr) for code examples.
