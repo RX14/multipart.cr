@@ -1,6 +1,6 @@
 require "../../spec_helper"
 
-describe HTTP::FormData::PullParser do
+describe HTTP::FormData::Parser do
   it "parses formdata" do
     formdata = <<-FORMDATA
       -----------------------------735323031399963166993862150
@@ -22,7 +22,7 @@ describe HTTP::FormData::PullParser do
       -----------------------------735323031399963166993862150--
       FORMDATA
 
-    parser = HTTP::FormData::PullParser.new MemoryIO.new(formdata.gsub("\n", "\r\n")), "---------------------------735323031399963166993862150"
+    parser = HTTP::FormData::Parser.new MemoryIO.new(formdata.gsub("\n", "\r\n")), "---------------------------735323031399963166993862150"
 
     runs = 0
     while parser.has_next?

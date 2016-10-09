@@ -1,7 +1,7 @@
 require "./formdata/**"
 
 module HTTP::FormData
-  # Parses a multipart/form-data message, yielding a `FormData::PullParser`.
+  # Parses a multipart/form-data message, yielding a `FormData::Parser`.
   #
   # ```
   # form_data = "--aA40\r\nContent-Disposition: form-data; name=\"field1\"\r\n\r\nfield data\r\n--aA40--"
@@ -13,7 +13,7 @@ module HTTP::FormData
   #
   # See: `FormData::Parser`
   def self.parse(io, boundary)
-    parser = PullParser.new(io, boundary)
+    parser = Parser.new(io, boundary)
     while parser.has_next?
       parser.next { |field, io, meta, headers| yield field, io, meta, headers }
     end
