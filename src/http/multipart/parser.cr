@@ -54,7 +54,7 @@ module HTTP::Multipart
         preamble_io = IO::Delimited.new(@io, read_delimiter: @dash_boundary)
 
         # Discard preamble
-        buffer = uninitialized UInt8[1024]
+        buffer = uninitialized UInt8[8192]
         while preamble_io.read(buffer.to_slice) > 0
         end
 
@@ -70,7 +70,7 @@ module HTTP::Multipart
           yield headers, body_io
         ensure
           # Read to end of body
-          buffer2 = uninitialized UInt8[1024]
+          buffer2 = uninitialized UInt8[8192]
           while body_io.read(buffer2.to_slice) > 0
           end
 
