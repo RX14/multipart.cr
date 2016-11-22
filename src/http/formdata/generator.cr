@@ -7,10 +7,10 @@ module HTTP::FormData
   # ### Example
   #
   # ```
-  # io = MemoryIO.new
+  # io = IO::Memory.new
   # generator = HTTP::FormData::Generator.new(io, "aA47")
   # generator.field("name", "joe")
-  # file = MemoryIO.new "file contents"
+  # file = IO::Memory.new "file contents"
   # generator.file("upload", io, FileMetadata.new(filename: "test.txt"))
   # generator.finish
   # io.to_s # => "--aA47\r\nContent-Disposition: form-data; name=\"name\"\r\n\r\njoe\r\n--aA47\r\nContent-Disposition: form-data; name=\"upload\"; filename=\"test.txt\"\r\n\r\nfile contents\r\n--aA47--"
@@ -37,7 +37,7 @@ module HTTP::FormData
     # Adds a form part with the given *name* and *value*. *Headers* can
     # optionally be provided for the form part.
     def field(name, value, headers : HTTP::Headers = HTTP::Headers.new)
-      file(name, MemoryIO.new(value), headers: headers)
+      file(name, IO::Memory.new(value), headers: headers)
     end
 
     # Adds a form part called *name*, with data from *io* as the value.

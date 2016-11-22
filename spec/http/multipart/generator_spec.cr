@@ -2,7 +2,7 @@ require "../../spec_helper"
 
 describe HTTP::Multipart::Generator do
   it "generates valid multipart messages" do
-    io = MemoryIO.new
+    io = IO::Memory.new
     generator = HTTP::Multipart::Generator.new(io, "fixed-boundary")
 
     headers = HTTP::Headers{"X-Foo" => "bar"}
@@ -28,7 +28,7 @@ describe HTTP::Multipart::Generator do
   end
 
   it "generates valid multipart messages with preamble and epilogue" do
-    io = MemoryIO.new
+    io = IO::Memory.new
     generator = HTTP::Multipart::Generator.new(io, "fixed-boundary")
 
     generator.preamble "Here is a preamble to explain why multipart/mixed "
@@ -63,19 +63,19 @@ describe HTTP::Multipart::Generator do
 
   describe "#content_type" do
     it "calculates the content type" do
-      generator = HTTP::Multipart::Generator.new(MemoryIO.new, "a delimiter string with a quote in \"")
+      generator = HTTP::Multipart::Generator.new(IO::Memory.new, "a delimiter string with a quote in \"")
       generator.content_type("alternative").should eq(%q(multipart/alternative; boundary="a delimiter string with a quote in \""))
     end
   end
 
   describe ".preamble" do
     it "accepts different data types" do
-      io = MemoryIO.new
+      io = IO::Memory.new
       generator = HTTP::Multipart::Generator.new(io, "boundary")
 
       generator.preamble "string\r\n"
       generator.preamble "slice\r\n".to_slice
-      preamble_io = MemoryIO.new "io\r\n"
+      preamble_io = IO::Memory.new "io\r\n"
       generator.preamble preamble_io
       generator.preamble do |io|
         io.print "io"
@@ -102,7 +102,7 @@ describe HTTP::Multipart::Generator do
     end
 
     it "raises when called after starting the body" do
-      generator = HTTP::Multipart::Generator.new(MemoryIO.new)
+      generator = HTTP::Multipart::Generator.new(IO::Memory.new)
 
       generator.body_part HTTP::Headers.new, "test"
       expect_raises(HTTP::Multipart::GenerationException, "Cannot generate preamble: body already started") do
@@ -113,14 +113,14 @@ describe HTTP::Multipart::Generator do
 
   describe ".body_part" do
     it "accepts different data types" do
-      io = MemoryIO.new
+      io = IO::Memory.new
       generator = HTTP::Multipart::Generator.new(io, "boundary")
 
       headers = HTTP::Headers{"X-Foo" => "Bar"}
 
       generator.body_part headers, "string\r\n"
       generator.body_part headers, "slice".to_slice
-      body_part_io = MemoryIO.new "io"
+      body_part_io = IO::Memory.new "io"
       generator.body_part headers, body_part_io
       generator.body_part(headers) do |io|
         io.print "io"
@@ -159,7 +159,7 @@ describe HTTP::Multipart::Generator do
     end
 
     it "raises when called after finishing" do
-      generator = HTTP::Multipart::Generator.new(MemoryIO.new)
+      generator = HTTP::Multipart::Generator.new(IO::Memory.new)
 
       generator.body_part HTTP::Headers.new, "test"
       generator.finish
@@ -169,7 +169,7 @@ describe HTTP::Multipart::Generator do
     end
 
     it "raises when called after epilogue" do
-      generator = HTTP::Multipart::Generator.new(MemoryIO.new)
+      generator = HTTP::Multipart::Generator.new(IO::Memory.new)
 
       generator.body_part HTTP::Headers.new, "test"
       generator.epilogue "test"
@@ -181,14 +181,14 @@ describe HTTP::Multipart::Generator do
 
   describe ".epilogue" do
     it "accepts different data types" do
-      io = MemoryIO.new
+      io = IO::Memory.new
       generator = HTTP::Multipart::Generator.new(io, "boundary")
 
       generator.body_part(HTTP::Headers.new)
 
       generator.epilogue "string\r\n"
       generator.epilogue "slice\r\n".to_slice
-      epilogue_io = MemoryIO.new "io\r\n"
+      epilogue_io = IO::Memory.new "io\r\n"
       generator.epilogue epilogue_io
       generator.epilogue do |io|
         io.print "io"
@@ -214,7 +214,7 @@ describe HTTP::Multipart::Generator do
     end
 
     it "raises when called after finishing" do
-      generator = HTTP::Multipart::Generator.new(MemoryIO.new)
+      generator = HTTP::Multipart::Generator.new(IO::Memory.new)
 
       generator.body_part HTTP::Headers.new, "test"
       generator.finish
@@ -225,7 +225,7 @@ describe HTTP::Multipart::Generator do
     end
 
     it "raises when called with no body parts" do
-      generator = HTTP::Multipart::Generator.new(MemoryIO.new)
+      generator = HTTP::Multipart::Generator.new(IO::Memory.new)
 
       expect_raises(HTTP::Multipart::GenerationException, "Cannot generate epilogue: no body parts") do
         generator.epilogue "test"
@@ -241,7 +241,7 @@ describe HTTP::Multipart::Generator do
 
   describe ".finish" do
     it "raises if no body exists" do
-      generator = HTTP::Multipart::Generator.new(MemoryIO.new)
+      generator = HTTP::Multipart::Generator.new(IO::Memory.new)
 
       expect_raises(HTTP::Multipart::GenerationException, "Cannot finish multipart: no body parts") do
         generator.finish
@@ -255,7 +255,7 @@ describe HTTP::Multipart::Generator do
     end
 
     it "raises if already finished" do
-      generator = HTTP::Multipart::Generator.new(MemoryIO.new)
+      generator = HTTP::Multipart::Generator.new(IO::Memory.new)
 
       generator.body_part HTTP::Headers.new, "test"
       generator.finish

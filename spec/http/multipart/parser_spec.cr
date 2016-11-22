@@ -1,7 +1,7 @@
 require "../../spec_helper"
 
 def mp_parse(delim, data)
-  data_io = MemoryIO.new(data.gsub("\n", "\r\n"))
+  data_io = IO::Memory.new(data.gsub("\n", "\r\n"))
   parser = HTTP::Multipart::Parser.new(data_io, delim)
 
   parsed = [] of {headers: HTTP::Headers, body: String}
@@ -65,7 +65,7 @@ describe HTTP::Multipart::Parser do
       Foo
       --AaB03x--
       MULTIPART
-    parser = HTTP::Multipart::Parser.new(MemoryIO.new(input.gsub("\n", "\r\n")), "AaB03x")
+    parser = HTTP::Multipart::Parser.new(IO::Memory.new(input.gsub("\n", "\r\n")), "AaB03x")
 
     parser.next { }
     parser.has_next?.should eq(false)
@@ -80,7 +80,7 @@ describe HTTP::Multipart::Parser do
       --AaB03x
       --AaB03x--
       MULTIPART
-    parser = HTTP::Multipart::Parser.new(MemoryIO.new(input.gsub("\n", "\r\n")), "AaB03x")
+    parser = HTTP::Multipart::Parser.new(IO::Memory.new(input.gsub("\n", "\r\n")), "AaB03x")
 
     expect_raises(HTTP::Multipart::ParseException, "Invalid multipart message") do
       parser.next { }
@@ -106,7 +106,7 @@ describe HTTP::Multipart::Parser do
       --b--
       MULTIPART
 
-    parser = HTTP::Multipart::Parser.new(MemoryIO.new(input.gsub("\n", "\r\n")), "b")
+    parser = HTTP::Multipart::Parser.new(IO::Memory.new(input.gsub("\n", "\r\n")), "b")
 
     ios = [] of IO
 

@@ -9,7 +9,7 @@ module HTTP::Multipart
   # ### Example
   #
   # ```
-  # io = MemoryIO.new
+  # io = IO::Memory.new
   # multipart = HTTP::Multipart::Generator.new(io)
   # multipart.body_part HTTP::Headers{"Content-Type" => "text/plain"}, "hello!"
   # multipart.finish

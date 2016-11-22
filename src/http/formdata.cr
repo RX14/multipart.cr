@@ -5,7 +5,7 @@ module HTTP::FormData
   #
   # ```
   # form_data = "--aA40\r\nContent-Disposition: form-data; name=\"field1\"\r\n\r\nfield data\r\n--aA40--"
-  # HTTP::FormData.parse(MemoryIO.new(form_data), "aA40") do |field, io|
+  # HTTP::FormData.parse(IO::Memory.new(form_data), "aA40") do |field, io|
   #   field # => "field1"
   #   data  # => "field data"
   # end
@@ -40,7 +40,7 @@ module HTTP::FormData
     boundary = request.headers["Content-Type"]?.try { |header| Multipart.parse_boundary(header) }
     raise ParseException.new "Cannot parse HTTP request: could not find boundary in Content-Type" unless boundary
 
-    parse(MemoryIO.new(body), boundary) { |field, io, meta, headers| yield field, io, meta, headers }
+    parse(body, boundary) { |field, io, meta, headers| yield field, io, meta, headers }
   end
 
   # Parses a `Content-Disposition` header string into a field name and
@@ -95,7 +95,7 @@ module HTTP::FormData
   # `Generator#finish` is called on the generator when the block returns.
   #
   # ```
-  # io = MemoryIO.new
+  # io = IO::Memory.new
   # HTTP::FormData.generate(io, "boundary") do |generator|
   #   generator.field("foo", "bar")
   # end
@@ -115,7 +115,7 @@ module HTTP::FormData
   # generator when the block returns.
   #
   # ```
-  # io = MemoryIO.new
+  # io = IO::Memory.new
   # response = HTTP::Server::Response.new io
   # HTTP::FormData.generate(response, "boundary") do |generator|
   #   generator.field("foo", "bar")

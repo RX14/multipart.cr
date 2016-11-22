@@ -9,7 +9,7 @@ module HTTP::Multipart
   #
   # ```
   # multipart = "--aA40\r\nContent-Type: text/plain\r\n\r\nbody\r\n--aA40--"
-  # HTTP::Multipart.parse(MemoryIO.new(multipart), "aA40") do |headers, io|
+  # HTTP::Multipart.parse(IO::Memory.new(multipart), "aA40") do |headers, io|
   #   headers["Content-Type"] # => "text/plain"
   #   io.gets_to_end          # => "body"
   # end
@@ -60,7 +60,7 @@ module HTTP::Multipart
 
     body = request.body
     return nil unless body
-    parse(MemoryIO.new(body), boundary) { |headers, io| yield headers, io }
+    parse(body, boundary) { |headers, io| yield headers, io }
   end
 
   # Yields a `Multipart::Generator` to the given block, writing to *io* and
