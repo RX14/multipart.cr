@@ -9,7 +9,7 @@ module HTTP::FormData
   #
   # ```
   # form_data = "--aA40\r\nContent-Disposition: form-data; name=\"field1\"\r\n\r\nfield data\r\n--aA40--"
-  # parser = HTTP::FormData::Parser.new(MemoryIO.new(form_data), "aA40")
+  # parser = HTTP::FormData::Parser.new(IO::Memory.new(form_data), "aA40")
   #
   # parser.field("field1") do |data|
   #   data # => "field data"
@@ -34,7 +34,7 @@ module HTTP::FormData
     #
     # ```
     # form_data = "--aA40\r\nContent-Disposition: form-data; name=\"field1\"; filename=\"foo.txt\"; size=13\r\nContent-Type: text/plain\r\n\r\nfield data\r\n--aA40--"
-    # parser = HTTP::FormData::Parser.new(MemoryIO.new(form_data), "aA40")
+    # parser = HTTP::FormData::Parser.new(IO::Memory.new(form_data), "aA40")
     # parser.next do |field, io, meta, headers|
     #   field                   # => "field1"
     #   io.gets_to_end          # => "field data"

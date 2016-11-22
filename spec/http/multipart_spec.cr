@@ -4,7 +4,7 @@ describe HTTP::Multipart do
   describe ".parse" do
     it "parses multipart messages" do
       multipart = "--aA40\r\nContent-Type: text/plain\r\n\r\nabcd\r\n--aA40--"
-      HTTP::Multipart.parse(MemoryIO.new(multipart), "aA40") do |headers, io|
+      HTTP::Multipart.parse(IO::Memory.new(multipart), "aA40") do |headers, io|
         headers["Content-Type"].should eq("text/plain")
         io.gets_to_end.should eq("abcd")
       end

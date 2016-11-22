@@ -12,7 +12,7 @@ describe HTTP::FormData do
         FORMDATA
 
       res = nil
-      HTTP::FormData.parse(MemoryIO.new(formdata.gsub('\n', "\r\n")), "foo") do |field, io|
+      HTTP::FormData.parse(IO::Memory.new(formdata.gsub('\n', "\r\n")), "foo") do |field, io|
         res = io.gets_to_end if field == "foo"
       end
       res.should eq("bar")
@@ -77,7 +77,7 @@ describe HTTP::FormData do
 
   describe ".generate(IO, String)" do
     it "generates a message" do
-      io = MemoryIO.new
+      io = IO::Memory.new
       HTTP::FormData.generate(io, "boundary") do |g|
         g.field("foo", "bar")
       end
@@ -95,7 +95,7 @@ describe HTTP::FormData do
 
   describe ".generate(HTTP::Response, String)" do
     it "generates a message" do
-      io = MemoryIO.new
+      io = IO::Memory.new
       response = HTTP::Server::Response.new(io)
       HTTP::FormData.generate(response, "boundary") do |g|
         g.field("foo", "bar")

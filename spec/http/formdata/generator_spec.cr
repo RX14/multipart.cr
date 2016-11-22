@@ -2,12 +2,12 @@ require "../../spec_helper"
 
 describe HTTP::FormData::Generator do
   it "generates valid form-data messages" do
-    io = MemoryIO.new
+    io = IO::Memory.new
     HTTP::FormData.generate(io, "fixed-boundary") do |g|
       g.field("foo", "bar")
       g.field("baz", "qux", HTTP::Headers{"X-Testing" => "headers"})
 
-      body = MemoryIO.new "file content"
+      body = IO::Memory.new "file content"
       time = Time.new(2016, 1, 1, 12, 0, 0, kind: Time::Kind::Utc)
       metadata = HTTP::FormData::FileMetadata.new("filename.txt \"", time, time, time, 12_u64)
       headers = HTTP::Headers{"Foo" => "Bar", "Baz" => "Qux"}
@@ -39,14 +39,14 @@ describe HTTP::FormData::Generator do
 
   describe "#content_type" do
     it "calculates the content type" do
-      generator = HTTP::FormData::Generator.new(MemoryIO.new, "a delimiter string with a quote in \"")
+      generator = HTTP::FormData::Generator.new(IO::Memory.new, "a delimiter string with a quote in \"")
       generator.content_type.should eq(%q(multipart/form-data; boundary="a delimiter string with a quote in \""))
     end
   end
 
   describe "#file" do
     it "fails after finish" do
-      generator = HTTP::FormData::Generator.new(MemoryIO.new)
+      generator = HTTP::FormData::Generator.new(IO::Memory.new)
       generator.field("foo", "bar")
       generator.finish
       expect_raises(HTTP::FormData::GenerationException, "Cannot add form part: already finished") do
@@ -57,7 +57,7 @@ describe HTTP::FormData::Generator do
 
   describe "#finish" do
     it "fails after finish" do
-      generator = HTTP::FormData::Generator.new(MemoryIO.new)
+      generator = HTTP::FormData::Generator.new(IO::Memory.new)
       generator.field("foo", "bar")
       generator.finish
       expect_raises(HTTP::FormData::GenerationException, "Cannot finish form-data: already finished") do
@@ -66,7 +66,7 @@ describe HTTP::FormData::Generator do
     end
 
     it "fails when no body parts" do
-      generator = HTTP::FormData::Generator.new(MemoryIO.new)
+      generator = HTTP::FormData::Generator.new(IO::Memory.new)
       expect_raises(HTTP::FormData::GenerationException, "Cannot finish form-data: no body parts") do
         generator.finish
       end
