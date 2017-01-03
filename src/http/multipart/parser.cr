@@ -92,7 +92,7 @@ module HTTP::Multipart
     private def parse_headers(io)
       headers = HTTP::Headers.new
 
-      while line = io.gets
+      while line = io.gets(chomp: false)
         if line == "\r\n"
           # Finished parsing
           return headers
