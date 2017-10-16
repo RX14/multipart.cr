@@ -1,3 +1,5 @@
+# This shard been merged into the crystal standard library. Please use [HTTP::FormData](https://crystal-lang.org/api/latest/HTTP/FormData.html) and [HTTP::Multipart](https://crystal-lang.org/api/latest/HTTP/Multipart.html).
+
 [![crystal-docs.org](https://crystal-docs.org/badge.svg?style=flat-square)](https://crystal-docs.org/RX14/multipart.cr)
 
 # multipart.cr
